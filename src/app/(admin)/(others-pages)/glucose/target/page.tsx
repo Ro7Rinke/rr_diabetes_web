@@ -1,0 +1,37 @@
+import GlucoseAverageCard from "@/components/glucose/GlucoseAverageCardProps";
+import GlucoseTargetCard from "@/components/user-profile/GlucoseTargetCard";
+import { ChevronLeftIcon } from "@/icons";
+import { Metadata } from "next";
+import Link from "next/link";
+import React from "react";
+
+export const metadata: Metadata = {
+    title: "Next.js Profile | TailAdmin - Next.js Dashboard Template",
+    description:
+        "This is Next.js Profile page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+};
+
+export default function GlucoseTargetInfo() {
+    return (
+        <div>
+            <div className="w-full sm:pt-10 mb-5 flex justify-start">
+                <Link
+                    href="/"
+                    className="inline-flex items-center rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/5"
+                >
+                    <ChevronLeftIcon className="mr-2 h-4 w-4" />
+                    Voltar à Home
+                </Link>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
+                <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
+                    Meta
+                </h3>
+                <div className="space-y-6">
+                    <GlucoseAverageCard average={118} goal={110} tolerance={10} />
+                    <GlucoseTargetCard />
+                </div>
+            </div>
+        </div>
+    );
+}
