@@ -8,6 +8,7 @@ import Select from "@/components/form/Select";
 import { ChevronDownIcon, TimeIcon } from "@/icons";
 import Button from "@/components/ui/button/Button";
 import Form from "@/components/form/Form"; // <-- importa sua classe Form
+import DatePicker from "../form/date-picker";
 
 export default function GlicemiaForm() {
   const [selectedOption, setSelectedOption] = useState("");
@@ -59,17 +60,26 @@ export default function GlicemiaForm() {
 
             {/* Data */}
             <div>
-              <Label htmlFor="data">Data da Medição</Label>
-              <Input
+              {/* <Label htmlFor="data">Data da Medição</Label> */}
+              {/* <Input
                 type="date"
                 id="data"
                 defaultValue={new Date().toISOString().slice(0, 10)}
+              /> */}
+              <DatePicker
+                id="data"
+                label="Data da Medição"
+                placeholder="Selecione a data"
+                defaultDate={new Date()} // já inicia com a data atual
+                onChange={(selectedDates) => {
+                  console.log("Data selecionada:", selectedDates[0]);
+                }}
               />
             </div>
 
             {/* Hora */}
             <div>
-              <Label htmlFor="hora">Hora da Medição</Label>
+              {/* <Label htmlFor="hora">Hora da Medição</Label>
               <div className="relative">
                 <Input
                   type="time"
@@ -79,11 +89,22 @@ export default function GlicemiaForm() {
                 <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
                   <TimeIcon />
                 </span>
-              </div>
+              </div> */}
+              <DatePicker
+                id="hora"
+                label="Hora da Medição"
+                placeholder="Selecione a hora"
+                mode="time"
+                defaultDate={new Date()}
+                onChange={(selectedDates) => {
+                  console.log("Hora selecionada:", selectedDates[0]);
+                }}
+              />
+
             </div>
 
             {/* Botão de envio */}
-            <div className="pt-4">
+            <div className="pt-4 flex justify-center">
               <Button variant="primary" size="md">
                 Salvar Medição
               </Button>
