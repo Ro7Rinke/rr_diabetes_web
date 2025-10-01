@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Form from "../form/Form";
+import Cookies from "js-cookie";
+import { fetchToken, setToken } from "@/lib/auth";
 
 export default function SignInForm() {
   const router = useRouter();
@@ -25,25 +27,10 @@ export default function SignInForm() {
     setErrorMessage("");
 
     try {
-      const res = await fetch("http://localhost:7001/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const token = await fetchToken(email, password)
+      setToken(token, isChecked)
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Erro ao fazer login");
-      }
-
-      const data = await res.json();
-      // data.token = JWT retornado da API
-      localStorage.setItem("token", data.token);
-
-      // Redirecionar para a página principal após login
-      router.push("/dashboard");
+      router.push("/");
     } catch (err: any) {
       setErrorMessage(err.message);
     } finally {
