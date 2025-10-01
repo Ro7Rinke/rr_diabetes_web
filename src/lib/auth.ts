@@ -48,16 +48,26 @@ export function isAuthenticated(): boolean {
 export const logout = async () => {
   try {
     removeToken()
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("user");
-
-    // 2. Se o token estiver em cookie HTTP-only, chame a API para limpar
-    // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
-    //   method: "POST",
-    //   credentials: "include",
-    // });
-
   } catch (error) {
     console.error("Erro ao deslogar:", error);
   }
 };
+
+export const signup = async (firstName: string, lastName: string, email: string, password: string) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firstName, lastName, email, password }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Erro ao fazer registro");
+      }
+
+      const data = await res.json();
+
+      return data.token
+}
