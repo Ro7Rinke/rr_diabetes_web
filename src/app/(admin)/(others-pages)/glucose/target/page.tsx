@@ -28,7 +28,7 @@ export default function GlucoseTargetInfo() {
                     Meta
                 </h3>
                 <div className="space-y-6">
-                    <GlucoseAverageCard average={118} goal={110} tolerance={10} />
+                    <GlucoseAverageCard />
                     <GlucoseTargetCard />
                 </div>
             </div>

@@ -1,18 +1,40 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import { fetchUserTarget, TargetData } from "@/lib/target";
 
 export default function GlucoseTargetCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const [target, setTarget] = useState<TargetData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try{
+      const data = await fetchUserTarget()
+      setTarget(data)
+    }catch(error){
+      console.error("Erro ao buscar meta:", error);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
     closeModal();
   };
+
+  if (loading) return <p>Carregando...</p>;
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -27,7 +49,7 @@ export default function GlucoseTargetCard() {
                 Valor
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                150.00
+                {target?.value ?? "-"}
               </p>
             </div>
 
@@ -36,7 +58,7 @@ export default function GlucoseTargetCard() {
                 Tolerância
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                ± 10
+                ± {target?.tolerance ?? "-"}
               </p>
             </div>
 
@@ -45,7 +67,7 @@ export default function GlucoseTargetCard() {
                 Dias considerados na média
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                7 dias
+                {target?.interval ?? "-"} dias
               </p>
             </div>
 

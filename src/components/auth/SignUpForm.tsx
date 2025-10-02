@@ -9,6 +9,7 @@ import Button from "../ui/button/Button";
 import { useRouter } from "next/navigation";
 import { setToken, signup } from "@/lib/auth";
 import Form from "../form/Form";
+import { fetchUser } from "@/lib/user";
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -29,8 +30,9 @@ export default function SignUpForm() {
   
       try {
         const token = await signup(firstName, lastName, email, password)
-
         setToken(token, false)
+        
+        await fetchUser()
   
         router.push("/");
       } catch (err: any) {

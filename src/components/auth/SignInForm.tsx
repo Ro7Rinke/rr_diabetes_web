@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Form from "../form/Form";
 import Cookies from "js-cookie";
-import { fetchToken, setToken } from "@/lib/auth";
+import { fetchToken, login, setToken } from "@/lib/auth";
+import { fetchUser } from "@/lib/user";
 
 export default function SignInForm() {
   const router = useRouter();
@@ -27,8 +28,7 @@ export default function SignInForm() {
     setErrorMessage("");
 
     try {
-      const token = await fetchToken(email, password)
-      setToken(token, isChecked)
+      await login(email, password, isChecked)
 
       router.push("/");
     } catch (err: any) {

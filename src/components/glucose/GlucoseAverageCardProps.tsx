@@ -1,27 +1,32 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon } from "@/icons";
+import { getTarget, TargetData } from "@/lib/target";
 
-interface GlucoseAverageCardProps {
-    average: number;
-    goal: number;
-    tolerance: number;
-}
+const GlucoseAverageCard = () => {
+    const [target, setTarget] = useState<TargetData | null>(null);
 
-const GlucoseAverageCard: React.FC<GlucoseAverageCardProps> = ({ average, goal, tolerance }) => {
+    const average = 118
+    const goal = target?.value ?? 0
+    const tolerance = target?.tolerance ?? 0
     const diff = average - goal;
-    const isWithinRange = Math.abs(diff) <= tolerance;
+    const isWithinRange = Math.abs(diff) <= tolerance
     const isAbove = diff > 0;
+
+    useEffect(() => {
+        const data = getTarget()
+        if (data !== undefined) setTarget(data)
+    },[])
 
     return (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
 
             {/* Conteúdo */}
-            <div className="flex items-end justify-between mt-5">
+            <div className="flex items-end justify-between">
                 <div>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
-                        Glicose média
+                        Média {target?.interval ?? 7} dias
                     </span>
                     <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
                         {average.toFixed(2)}

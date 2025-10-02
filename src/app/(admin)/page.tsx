@@ -45,7 +45,7 @@ const measurements = [
     <div >
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <GlucoseAverageCard average={118} goal={110} tolerance={10} />
+        <GlucoseAverageCard />
       </div>
 
       <div className="p-6">

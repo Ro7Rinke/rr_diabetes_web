@@ -8,20 +8,20 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 export default function ForgotPasswordForm() {
-//   const [showPassword, setShowPassword] = useState(false);
-//   const [isChecked, setIsChecked] = useState(false);
+  //   const [showPassword, setShowPassword] = useState(false);
+  //   const [isChecked, setIsChecked] = useState(false);
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-      <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
-        <Link
-          href="/signin"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <ChevronLeftIcon />
-          Voltar ao login
-        </Link>
-      </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+        <div className="w-full sm:pt-10 mb-5 flex justify-start">
+          <Link
+            href="/signin"
+            className="inline-flex items-center rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/5"
+          >
+            <ChevronLeftIcon className="mr-2 h-4 w-4" />
+            Voltar ao login
+          </Link>
+        </div>
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
