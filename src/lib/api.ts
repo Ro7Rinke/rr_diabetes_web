@@ -46,10 +46,10 @@ export const requestAPI = async (
         const data = await res.json();
         throw new Error(data.message || "Erro ao realizar a requisição");
     }
-    const data = res.json()
-    // const data = res.headers.get('content-type')?.includes(ContentType.JSON) 
-    //     ? res.json() 
-    //     : res.text
+    // const data = res.json()
+    const data = res.headers.get('content-type')?.includes(ContentType.JSON) 
+        ? res.json() 
+        : res.text
 
     return data
 }
