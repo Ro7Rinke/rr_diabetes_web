@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import { fetchGlucoseRecords, GlucoseRecord } from "@/lib/glucose";
+import { fetchGlucoseRecords, getRecordContextLabel, GlucoseRecord } from "@/lib/glucose";
 import { getStatusRangeBadgeColor, getStatusRangeIcon, getStatusWithinRange } from "@/lib/target";
 import { formatValue } from "@/lib/commons";
 
@@ -105,7 +105,7 @@ export default function GlucoseListTable() {
                         className="text-sm text-gray-800 dark:text-white/90"
                         onClick={() => (window.location.href = `/glucose/${record.id}`)}
                       >
-                        {record.context}
+                        {getRecordContextLabel(record.context, true)}
                       </div>
                     </TableCell>
 

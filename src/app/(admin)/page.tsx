@@ -18,29 +18,6 @@ export const metadata: Metadata = {
 };
 
 export default function Ecommerce() {
-
-  const glucoseValues = [120, 145, 100, 110, 130, 150, 125, 135, 140, 115];
-  const glucoseLabels = [
-    "2025-09-23 08:00",
-    "2025-09-23 12:00",
-    "2025-09-23 18:00",
-    "2025-09-24 07:30",
-    "2025-09-24 13:00",
-    "2025-09-24 19:15",
-    "2025-09-25 08:45",
-    "2025-09-25 14:30",
-    "2025-09-25 20:00",
-    "2025-09-26 08:15",
-  ];
-
-const measurements = [
-  { id: "1", value: 110, date: "2025-09-29T08:00", timing: "Jejum", obs: "lllllllllllllllllllllllllllllllllllllllllllllllllNada antes" },
-  { id: "2", value: 150, date: "2025-09-29T10:00", timing: "Depois", obs: "Após café" },
-];
-
-  const goal = 110;
-  const tolerance = 10;
-
   return (
     <div >
 
@@ -52,12 +29,7 @@ const measurements = [
         <h2 className="mb-4 font-semibold text-title-md dark:text-white/90">
           Últimas medições de glicose
         </h2>
-        <GlucoseLineChart
-          values={glucoseValues}
-          labels={glucoseLabels}
-          goal={goal}
-          tolerance={tolerance}
-        />
+        <GlucoseLineChart />
       </div>
 
       <GlucoseListTable />

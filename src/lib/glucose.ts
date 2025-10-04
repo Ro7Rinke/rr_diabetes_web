@@ -22,16 +22,16 @@ export interface CreateGlucoseRecord {
     context: RecordContext
 }
 
-export const getRecordContextLabel = (recordContext: RecordContext): string => {
+export const getRecordContextLabel = (recordContext: RecordContext, isShort: boolean = false): string => {
     switch(recordContext){
         case RecordContext.FASTING:
-            return 'Jejum'
+            return isShort ? 'Jejum' : 'Jejum'
         case RecordContext.POST_MEAL:
-            return 'Pós Refeição'
+            return isShort ? 'Pós' : 'Pós Refeição'
         case RecordContext.PRE_MEAL:
-            return 'Pré Refeição'
+            return isShort ? 'Pré' : 'Pré Refeição'
         case RecordContext.RANDOM:
-            return 'Qualquer Momento'
+            return isShort ? 'Qualquer' : 'Qualquer Momento'
     }
 }
 
