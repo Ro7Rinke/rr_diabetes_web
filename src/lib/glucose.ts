@@ -22,6 +22,19 @@ export interface CreateGlucoseRecord {
     context: RecordContext
 }
 
+export const getRecordContextLabel = (recordContext: RecordContext): string => {
+    switch(recordContext){
+        case RecordContext.FASTING:
+            return 'Jejum'
+        case RecordContext.POST_MEAL:
+            return 'Pós Refeição'
+        case RecordContext.PRE_MEAL:
+            return 'Pré Refeição'
+        case RecordContext.RANDOM:
+            return 'Qualquer Momento'
+    }
+}
+
 export const createGlucoseRecord = async (glucoseRecord: CreateGlucoseRecord) => {
     const endpoint = '/glucose/record'
     const token = getToken()
