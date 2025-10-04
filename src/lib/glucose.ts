@@ -9,15 +9,28 @@ export enum RecordContext {
 }
 
 export interface GlucoseRecord {
+    id: string,
+    value: number,
+    measuredAt: Date,
+    obs?: string,
+    context: RecordContext
+}
+export interface CreateGlucoseRecord {
     value: number,
     measuredAt: Date,
     obs?: string,
     context: RecordContext
 }
 
-export const createGlucoseRecord = async (glucoseRecord: GlucoseRecord) => {
+export const createGlucoseRecord = async (glucoseRecord: CreateGlucoseRecord) => {
     const endpoint = '/glucose/record'
     const token = getToken()
     const body = JSON.stringify(glucoseRecord)
     return await requestAPI(HttpMethod.POST, endpoint, token, body)
+}
+
+export const fetchGlucoseRecords = async (): Promise<GlucoseRecord[]> => {
+    const endpoint = '/glucose/record'
+    const token = getToken()
+    return await requestAPI(HttpMethod.GET, endpoint, token)
 }

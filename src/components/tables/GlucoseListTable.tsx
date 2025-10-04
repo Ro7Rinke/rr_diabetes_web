@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,27 +8,37 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
+import { fetchGlucoseRecords, GlucoseRecord } from "@/lib/glucose";
+import { getStatusRangeBadgeColor, getStatusRangeIcon, getStatusWithinRange } from "@/lib/target";
+import { formatValue } from "@/lib/commons";
 
-interface GlucoseMeasurement {
-  id: string;
-  value: number;
-  date: string;
-  timing: string; //"Jejum" | "Antes" | "Depois";
-  obs?: string;
-}
 
-interface GlucoseListTableProps {
-  measurements: GlucoseMeasurement[];
-  goal: number;
-  tolerance: number;
-}
+export default function GlucoseListTable() {
+  const [glucoseRecords, setGlucoseRecords] = useState<GlucoseRecord[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-export default function GlucoseListTable({
-  measurements,
-  goal,
-  tolerance,
-}: GlucoseListTableProps) {
-  if (!measurements || measurements.length === 0) {
+
+  const fetchData = async () => {
+    setLoading(true)
+    setErrorMessage("")
+
+    try {
+      const dataRecords = await fetchGlucoseRecords()
+      setGlucoseRecords(dataRecords)
+    } catch (error: any) {
+      setErrorMessage(error.message)
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  if (!glucoseRecords || glucoseRecords.length === 0) {
     return <p className="text-gray-500 dark:text-gray-400">Sem medições para exibir.</p>;
   }
 
@@ -39,7 +49,6 @@ export default function GlucoseListTable({
           <Table>
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                <TableCell className="px-2 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Status</TableCell>
                 <TableCell className="px-2 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Valor</TableCell>
                 <TableCell className="px-2 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Data / Hora</TableCell>
                 <TableCell className="px-2 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Timing</TableCell>
@@ -48,47 +57,22 @@ export default function GlucoseListTable({
             </TableHeader>
 
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {measurements.map((m) => {
-                const withinGoal = Math.abs(m.value - goal) <= tolerance;
+              {glucoseRecords.map((record) => {
+                const statusWithinRange = getStatusWithinRange(record.value)
+                const StatusRangeIcon = getStatusRangeIcon(statusWithinRange)
 
                 return (
-                  <TableRow key={m.id} className="hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
-                    {/* Status */}
-                    <TableCell className="px-2 py-1 text-center">
-                      <Badge color={withinGoal ? "success" : "error"}>
-                        {withinGoal ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                          </svg>
-                        )}
-                      </Badge>
-                    </TableCell>
-
+                  <TableRow key={record.id} className="hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
                     {/* Valor */}
                     <TableCell className="px-2 py-1 text-center">
                       <div
                         className="text-sm font-medium text-gray-800 dark:text-white/90"
-                        onClick={() => (window.location.href = `/glucose/${m.id}`)}
+                        onClick={() => (window.location.href = `/glucose/${record.id}`)}
                       >
-                        {m.value}
+                        <Badge color={getStatusRangeBadgeColor(statusWithinRange)}>
+                          <StatusRangeIcon />
+                          {formatValue(record.value)}
+                        </Badge>
                       </div>
                     </TableCell>
 
@@ -96,18 +80,18 @@ export default function GlucoseListTable({
                     <TableCell className="px-2 py-1 text-center">
                       <div
                         className="text-xs text-gray-800 dark:text-white/90 leading-tight"
-                        onClick={() => (window.location.href = `/glucose/${m.id}`)}
+                        onClick={() => (window.location.href = `/glucose/${record.id}`)}
                       >
-                        {new Date(m.date).toLocaleTimeString("pt-BR", {
+                        {new Date(record.measuredAt).toLocaleTimeString("pt-BR", {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
                       </div>
                       <div
                         className="text-xxs text-gray-500 dark:text-gray-400 leading-tight"
-                        onClick={() => (window.location.href = `/glucose/${m.id}`)}
+                        onClick={() => (window.location.href = `/glucose/${record.id}`)}
                       >
-                        {new Date(m.date).toLocaleDateString("pt-BR", {
+                        {new Date(record.measuredAt).toLocaleDateString("pt-BR", {
                           day: "2-digit",
                           month: "2-digit",
                           year: "2-digit",
@@ -119,9 +103,9 @@ export default function GlucoseListTable({
                     <TableCell className="px-2 py-1 text-center">
                       <div
                         className="text-sm text-gray-800 dark:text-white/90"
-                        onClick={() => (window.location.href = `/glucose/${m.id}`)}
+                        onClick={() => (window.location.href = `/glucose/${record.id}`)}
                       >
-                        {m.timing}
+                        {record.context}
                       </div>
                     </TableCell>
 
@@ -129,10 +113,10 @@ export default function GlucoseListTable({
                     <TableCell className="px-2 py-1 max-w-[150px]">
                       <div
                         className="truncate text-xs text-gray-800 dark:text-white/90"
-                        title={m.obs}
-                        onClick={() => (window.location.href = `/glucose/${m.id}`)}
+                        title={record.obs}
+                        onClick={() => (window.location.href = `/glucose/${record.id}`)}
                       >
-                        {m.obs ? (m.obs.length > 50 ? m.obs.substring(0, 50) + "…" : m.obs) : "-"}
+                        {record.obs ? (record.obs.length > 50 ? record.obs.substring(0, 50) + "…" : record.obs) : "-"}
                       </div>
                     </TableCell>
                   </TableRow>

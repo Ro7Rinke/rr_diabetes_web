@@ -8,16 +8,8 @@ import { ChevronDownIcon } from "@/icons";
 import Button from "@/components/ui/button/Button";
 import Form from "@/components/form/Form";
 import DatePicker from "../form/date-picker";
-import { createGlucoseRecord, RecordContext } from "@/lib/glucose";
-import { sleep } from "@/lib/commons";
+import { CreateGlucoseRecord, createGlucoseRecord, RecordContext } from "@/lib/glucose";
 import { useRouter } from "next/navigation";
-
-export interface GlucoseRecord {
-  value: number;
-  measuredAt: Date;
-  obs?: string;
-  context: RecordContext;
-}
 
 export default function GlicemiaForm() {
   const router = useRouter();
@@ -55,7 +47,7 @@ export default function GlicemiaForm() {
       const measuredAt = new Date(date);
       measuredAt.setHours(hour.getHours(), hour.getMinutes(), 0, 0);
 
-      const record: GlucoseRecord = {
+      const record: CreateGlucoseRecord = {
         value: Number(value),
         measuredAt,
         obs: obs || undefined,

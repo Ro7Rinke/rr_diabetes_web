@@ -1,18 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Badge from "../ui/badge/Badge";
-import { ArrowDownIcon, ArrowUpIcon } from "@/icons";
-import { getTarget, TargetData } from "@/lib/target";
+import { getStatusRangeBadgeColor, getStatusRangeIcon, getStatusRangeText, getStatusWithinRange, getTarget, TargetData } from "@/lib/target";
 
 const GlucoseAverageCard = () => {
     const [target, setTarget] = useState<TargetData | null>(null);
 
-    const average = 118
+    const average = 113.06
     const goal = target?.value ?? 0
     const tolerance = target?.tolerance ?? 0
-    const diff = average - goal;
-    const isWithinRange = Math.abs(diff) <= tolerance
-    const isAbove = diff > 0;
+    const statusWithinRange = getStatusWithinRange(average)
+    const StatusRangeIcon = getStatusRangeIcon(statusWithinRange)
 
     useEffect(() => {
         const data = getTarget()
@@ -43,22 +41,10 @@ const GlucoseAverageCard = () => {
                     </div>
 
                     {/* Badge */}
-                    {isWithinRange ? (
-                        <Badge color="success">
-                            <ArrowUpIcon className="text-success-500" />
-                            Ótimo
-                        </Badge>
-                    ) : isAbove ? (
-                        <Badge color="error">
-                            <ArrowUpIcon className="text-error-500" />
-                            Alto
-                        </Badge>
-                    ) : (
-                        <Badge color="error">
-                            <ArrowDownIcon className="text-error-500" />
-                            Baixo
-                        </Badge>
-                    )}
+                    <Badge color={getStatusRangeBadgeColor(statusWithinRange)}>
+                        <StatusRangeIcon />
+                        {getStatusRangeText(statusWithinRange)}
+                    </Badge>
                 </div>
             </div>
         </div>
@@ -66,52 +52,3 @@ const GlucoseAverageCard = () => {
 };
 
 export default GlucoseAverageCard;
-
-
-
-
-// "use client";
-
-// import { ArrowUpIcon, ArrowDownIcon } from "@/icons";
-
-// interface GlucoseAverageCardProps {
-//   average: number;
-//   goal: number;
-//   tolerance?: number;
-// }
-
-// export default function GlucoseAverageCard({
-//   average,
-//   goal,
-//   tolerance = 10,
-// }: GlucoseAverageCardProps) {
-//   const diff = average - goal;
-//   const isWithinTolerance = Math.abs(diff) <= tolerance;
-
-//   const IndicatorIcon = diff > 0 ? ArrowUpIcon : ArrowDownIcon;
-//   const indicatorColor = isWithinTolerance ? "text-green-500" : "text-red-500";
-
-//   return (
-//     <div className="p-5 bg-white rounded-lg shadow dark:bg-gray-900">
-//       <h3 className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-//         Média das últimas medições
-//       </h3>
-//       <div className="flex items-center justify-between">
-//         <div>
-//           <p className="text-2xl font-bold text-gray-800 dark:text-white">
-//             {average.toFixed(2)}
-//           </p>
-//           <p className="text-sm text-gray-500 dark:text-gray-400">
-//             Meta: {goal} mg/dL
-//           </p>
-//         </div>
-//         <div className={`flex items-center ${indicatorColor}`}>
-//           <IndicatorIcon className="w-6 h-6 mr-1" />
-//           <span className="text-sm font-semibold">
-//             {isWithinTolerance ? "Dentro da meta" : "Fora da meta"}
-//           </span>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }

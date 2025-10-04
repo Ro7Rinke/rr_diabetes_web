@@ -13,8 +13,8 @@ import GlucoseListTable from "@/components/tables/GlucoseListTable";
 
 export const metadata: Metadata = {
   title:
-    "Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Home for TailAdmin Dashboard Template",
+    "RR_DIABETES",
+  description: "Sistema para cadastro de leituras de glicemia",
 };
 
 export default function Ecommerce() {
@@ -60,7 +60,7 @@ const measurements = [
         />
       </div>
 
-      <GlucoseListTable measurements={measurements} goal={goal} tolerance={tolerance} />
+      <GlucoseListTable />
 
       <FloatingButton href="/glucose/new" />
 
