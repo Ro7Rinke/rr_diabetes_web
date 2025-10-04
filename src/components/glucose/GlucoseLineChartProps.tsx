@@ -13,10 +13,10 @@ interface GlucoseLineChartProps {
 
 export default function GlucoseLineChart({ goal, tolerance = 10 }: GlucoseLineChartProps) {
   const [glucoseRecords, setGlucoseRecords] = useState<GlucoseRecord[]>([]);
-  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // 🔹 1. Carrega os dados da API
+  // 🔹 Hooks sempre primeiro
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -25,18 +25,16 @@ export default function GlucoseLineChart({ goal, tolerance = 10 }: GlucoseLineCh
       try {
         const dataRecords = await fetchGlucoseRecords();
         setGlucoseRecords(dataRecords);
-      } catch (error: any) {
-        setErrorMessage(error.message);
-        console.error(error);
+      } catch (err: any) {
+        setErrorMessage(err.message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  // 🔹 2. Define série e opções do gráfico apenas quando há dados
+  // 🔹 Serie de dados
   const series =
     glucoseRecords.length > 0
       ? [
@@ -50,6 +48,23 @@ export default function GlucoseLineChart({ goal, tolerance = 10 }: GlucoseLineCh
         ]
       : [];
 
+  // 🔹 Calcula max/min para os markers
+  const yValues = glucoseRecords.map((r) => Number(r.value));
+  const maxValue = Math.max(...yValues);
+  const minValue = Math.min(...yValues);
+
+const markersDiscrete = glucoseRecords
+  .map((r, i) => {
+    const val = Number(r.value);
+    if (val === maxValue)
+      return { seriesIndex: 0, dataPointIndex: i, size: 6, fillColor: "#EF4444", strokeColor: "#fff" };
+    if (val === minValue)
+      return { seriesIndex: 0, dataPointIndex: i, size: 6, fillColor: "#F59E0B", strokeColor: "#fff" };
+    return null;
+  })
+  .filter((m): m is { seriesIndex: number; dataPointIndex: number; size: number; fillColor: string; strokeColor: string } => m !== null);
+
+  // 🔹 Opções do gráfico
   const options: ApexOptions = {
     chart: {
       id: "glucose",
@@ -58,37 +73,29 @@ export default function GlucoseLineChart({ goal, tolerance = 10 }: GlucoseLineCh
       toolbar: { show: false },
       zoom: { enabled: false },
       background: "transparent",
-      foreColor: "#6B7280", // gray-500
+      foreColor: "#6B7280",
     },
     stroke: { curve: "smooth", width: 3 },
-    colors: ["#3B82F6"], // blue-500
+    colors: ["#3B82F6"],
     xaxis: {
       type: "datetime",
-      labels: {
-        datetimeFormatter: { hour: "HH:mm" },
-        style: { colors: "#6B7280", fontSize: "12px" },
-      },
+      labels: { style: { colors: "#6B7280", fontSize: "12px" } },
       axisBorder: { show: false },
       axisTicks: { show: false },
-      tickAmount: 6,
+      tickAmount: 6, // máximo 6 marcações
     },
     yaxis: {
       title: { text: "mg/dL", style: { color: "#6B7280" } },
       labels: { style: { colors: "#6B7280", fontSize: "12px" } },
     },
+    markers: { size: 4, discrete: markersDiscrete },
     tooltip: {
       theme: "dark",
       custom: ({ dataPointIndex }) => {
         const record = glucoseRecords[dataPointIndex];
         if (!record) return "";
         const date = new Date(record.measuredAt);
-        const formatted = date.toLocaleString("pt-BR", {
-          day: "2-digit",
-          month: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-
+        const formatted = date.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
         return `
           <div class="p-2 text-sm">
             <strong>${record.value} mg/dL</strong><br/>
@@ -101,74 +108,17 @@ export default function GlucoseLineChart({ goal, tolerance = 10 }: GlucoseLineCh
     },
     annotations: {
       yaxis: [
-        {
-          y: goal,
-          borderColor: "#10B981",
-          label: {
-            text: "Meta",
-            borderColor: "#10B981",
-            style: {
-              color: "#10B981",
-              background: "transparent",
-            },
-          },
-        },
-        {
-          y: goal + tolerance,
-          borderColor: "#F59E0B",
-          strokeDashArray: 4,
-        },
-        {
-          y: goal - tolerance,
-          borderColor: "#F59E0B",
-          strokeDashArray: 4,
-        },
+        { y: goal, borderColor: "#10B981", label: { text: "Meta", style: { color: "#10B981" } } },
+        { y: goal + tolerance, borderColor: "#F59E0B", strokeDashArray: 4 },
+        { y: goal - tolerance, borderColor: "#F59E0B", strokeDashArray: 4 },
       ],
     },
-    grid: {
-      borderColor: "#E5E7EB",
-      xaxis: { lines: { show: false } },
-      yaxis: { lines: { show: true } },
-    },
+    grid: { xaxis: { lines: { show: false } }, yaxis: { lines: { show: true } } },
   };
 
-  // 🔹 3. Hook para adaptar cores conforme o tema (SEM quebrar ordem)
-  useEffect(() => {
-    const html = document.documentElement;
-    const isDark = html.classList.contains("dark");
-
-    (window as any).Apex?.charts?.exec("glucose", "updateOptions", {
-      chart: { foreColor: isDark ? "#9CA3AF" : "#6B7280" },
-      grid: { borderColor: isDark ? "#374151" : "#E5E7EB" },
-      colors: [isDark ? "#60A5FA" : "#3B82F6"],
-      annotations: {
-        yaxis: [
-          {
-            y: goal,
-            borderColor: isDark ? "#34D399" : "#10B981",
-            label: { style: { color: isDark ? "#34D399" : "#10B981" } },
-          },
-          {
-            y: goal + tolerance,
-            borderColor: isDark ? "#FBBF24" : "#F59E0B",
-            strokeDashArray: 4,
-          },
-          {
-            y: goal - tolerance,
-            borderColor: isDark ? "#FBBF24" : "#F59E0B",
-            strokeDashArray: 4,
-          },
-        ],
-      },
-    });
-  }, [goal, tolerance]);
-
-  // 🔹 4. Renderização condicional segura (sem alterar ordem dos hooks)
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] p-4">
-      <h3 className="text-sm font-medium text-gray-800 dark:text-white/90 mb-3">
-        Histórico de Glicose
-      </h3>
+      <h3 className="text-sm font-medium text-gray-800 dark:text-white/90 mb-3">Histórico de Glicose</h3>
 
       {loading ? (
         <p className="text-gray-500 dark:text-gray-400">Carregando...</p>
@@ -177,9 +127,7 @@ export default function GlucoseLineChart({ goal, tolerance = 10 }: GlucoseLineCh
       ) : glucoseRecords.length === 0 ? (
         <p className="text-gray-500 dark:text-gray-400">Sem dados para exibir.</p>
       ) : (
-        <div id="glucose-chart">
-          <ReactApexChart options={options} series={series} type="line" height={350} />
-        </div>
+        <ReactApexChart options={options} series={series} type="line" height={350} />
       )}
     </div>
   );
