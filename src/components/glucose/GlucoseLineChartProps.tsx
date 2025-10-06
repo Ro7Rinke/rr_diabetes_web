@@ -123,7 +123,7 @@ export default function GlucoseLineChart() {
 
     return (
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] p-4">
-            <h3 className="text-sm font-medium text-gray-800 dark:text-white/90 mb-3">Histórico de Glicose</h3>
+            <h3 className="text-md font-medium text-gray-800 dark:text-white/90 mb-3">Histórico de Glicose</h3>
 
             {loading ? (
                 <p className="text-gray-500 dark:text-gray-400">Carregando...</p>

@@ -37,8 +37,7 @@ export const fetchUserTarget = async (): Promise<TargetData> => {
     const data = await requestAPI(HttpMethod.GET, endpoint, token)
 
     setTarget(data)
-    console.log(data)
-
+    
     return data
 }
 

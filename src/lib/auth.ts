@@ -2,6 +2,7 @@
 import Cookies from "js-cookie";
 import { fetchUser } from "./user";
 import { fetchUserTarget } from "./target";
+import { clearAllCookies } from "./commons";
 
 const PUBLIC_PATHS = ["/signin", "/signup", "/reset-password"];
 
@@ -41,14 +42,6 @@ export function removeToken() {
     Cookies.remove("token");
 }
 
-export const getUser = () => {
-    const userString = Cookies.get('user')
-
-    if (!userString) throw new Error("Erro ao carregar usuário da sessão")
-
-    return JSON.parse(userString)
-}
-
 export function isAuthenticated(): boolean {
     const token = getToken();
     return !!token;
@@ -56,8 +49,7 @@ export function isAuthenticated(): boolean {
 
 export const logout = async () => {
     try {
-        removeToken()
-        Cookies.remove('user')
+        clearAllCookies()
     } catch (error) {
         console.error("Erro ao deslogar:", error);
     }

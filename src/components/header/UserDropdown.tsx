@@ -6,11 +6,15 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/auth";
+import { UserCircleIcon } from "@/icons";
+import { getUser } from "@/lib/user";
 
 export default function UserDropdown() {
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const user = getUser()
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -35,12 +39,14 @@ export default function UserDropdown() {
           <Image
             width={44}
             height={44}
-            src="/images/user/owner.jpg"
+            src="/images/user/generic-user.png"
             alt="User"
+            priority
           />
+          {/* <UserCircleIcon className="w-44 h-44 text-gray-600 dark:text-gray-300" /> */}
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">Musharof</span>
+        <span className="block mr-1 font-medium text-theme-sm">{user.firstName}</span>
 
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""

@@ -19,45 +19,17 @@ export const metadata: Metadata = {
 
 export default function Ecommerce() {
   return (
-    <div >
+    <div className="pb-24" >
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <GlucoseAverageCard />
       </div>
 
-      <div className="p-6">
-        <h2 className="mb-4 font-semibold text-title-md dark:text-white/90">
-          Últimas medições de glicose
-        </h2>
+      <div className="pb-6 pt-6">
         <GlucoseLineChart />
       </div>
-
       <GlucoseListTable />
-
       <FloatingButton href="/glucose/new" />
-
-
-      {/* <div className="col-span-12 space-y-6 xl:col-span-7">
-      <EcommerceMetrics />
-
-      <MonthlySalesChart />
-    </div>
-
-    <div className="col-span-12 xl:col-span-5">
-      <MonthlyTarget />
-    </div>
-
-    <div className="col-span-12">
-      <StatisticsChart />
-    </div>
-
-    <div className="col-span-12 xl:col-span-5">
-      <DemographicCard />
-    </div>
-
-    <div className="col-span-12 xl:col-span-7">
-      <RecentOrders />
-    </div> */}
     </div>
   );
 }

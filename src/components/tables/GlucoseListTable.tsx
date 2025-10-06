@@ -45,14 +45,14 @@ export default function GlucoseListTable() {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
-        <div className="min-w-[700px]">
-          <Table>
+        <div className="min-w-[500px]">
+          <Table >
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                <TableCell className="px-2 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Valor</TableCell>
-                <TableCell className="px-2 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Data / Hora</TableCell>
-                <TableCell className="px-2 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Timing</TableCell>
-                <TableCell className="px-2 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Observação</TableCell>
+                <TableCell className="w-[70px] px-0.5 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Valor</TableCell>
+                <TableCell className="w-[100px] px-0.5 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Data / Hora</TableCell>
+                <TableCell className="w-[100px] px-0.5 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Timing</TableCell>
+                <TableCell className="px-0.5 py-2 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400">Observação</TableCell>
               </TableRow>
             </TableHeader>
 
@@ -64,7 +64,7 @@ export default function GlucoseListTable() {
                 return (
                   <TableRow key={record.id} className="hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
                     {/* Valor */}
-                    <TableCell className="px-2 py-1 text-center">
+                    <TableCell className="px-0.5 py-1 text-center">
                       <div
                         className="text-sm font-medium text-gray-800 dark:text-white/90"
                         onClick={() => (window.location.href = `/glucose/${record.id}`)}
@@ -77,7 +77,7 @@ export default function GlucoseListTable() {
                     </TableCell>
 
                     {/* Data / Hora */}
-                    <TableCell className="px-2 py-1 text-center">
+                    <TableCell className="px-0.5 py-1 text-center">
                       <div
                         className="text-xs text-gray-800 dark:text-white/90 leading-tight"
                         onClick={() => (window.location.href = `/glucose/${record.id}`)}
@@ -100,7 +100,7 @@ export default function GlucoseListTable() {
                     </TableCell>
 
                     {/* Timing */}
-                    <TableCell className="px-2 py-1 text-center">
+                    <TableCell className="px-0.5 py-1 text-center">
                       <div
                         className="text-sm text-gray-800 dark:text-white/90"
                         onClick={() => (window.location.href = `/glucose/${record.id}`)}
@@ -110,7 +110,7 @@ export default function GlucoseListTable() {
                     </TableCell>
 
                     {/* Observação */}
-                    <TableCell className="px-2 py-1 max-w-[150px]">
+                    <TableCell className="px-0.5 py-1 max-w-[150px]">
                       <div
                         className="truncate text-xs text-gray-800 dark:text-white/90"
                         title={record.obs}
