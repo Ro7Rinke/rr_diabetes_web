@@ -29,10 +29,7 @@ export default function SignUpForm() {
       setErrorMessage("");
   
       try {
-        const token = await signup(firstName, lastName, email, password)
-        setToken(token, false)
-        
-        await fetchUser()
+        await signup(firstName, lastName, email, password)
   
         router.push("/");
       } catch (err: any) {

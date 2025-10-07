@@ -69,9 +69,7 @@ export const signup = async (firstName: string, lastName: string, email: string,
         throw new Error(data.message || "Erro ao fazer registro");
     }
 
-    const data = await res.json();
-
-    return data.token
+    await login(email, password, false)
 }
 
 export const login = async (email: string, password: string, isKeepLogged: boolean) => {
