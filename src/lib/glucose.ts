@@ -22,6 +22,15 @@ export interface CreateGlucoseRecord {
     context: RecordContext
 }
 
+export interface GlucoseAverage {
+    average: number,
+    count: number,
+    interval: number,
+    from: Date,
+    to: Date,
+    records: Array<GlucoseRecord>
+}
+
 export const getRecordContextLabel = (recordContext: RecordContext, isShort: boolean = false): string => {
     switch(recordContext){
         case RecordContext.FASTING:
@@ -44,6 +53,12 @@ export const createGlucoseRecord = async (glucoseRecord: CreateGlucoseRecord) =>
 
 export const fetchGlucoseRecords = async (): Promise<GlucoseRecord[]> => {
     const endpoint = '/glucose/record'
+    const token = getToken()
+    return await requestAPI(HttpMethod.GET, endpoint, token)
+}
+
+export const fetchGlucoseAverage = async (): Promise<GlucoseAverage> => {
+    const endpoint = '/glucose/average'
     const token = getToken()
     return await requestAPI(HttpMethod.GET, endpoint, token)
 }

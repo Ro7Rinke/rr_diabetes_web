@@ -2,29 +2,50 @@
 import React, { useEffect, useState } from "react";
 import Badge from "../ui/badge/Badge";
 import { getStatusRangeBadgeColor, getStatusRangeIcon, getStatusRangeText, getStatusWithinRange, getTarget, TargetData } from "@/lib/target";
+import { fetchGlucoseAverage, GlucoseAverage } from "@/lib/glucose";
 
 const GlucoseAverageCard = () => {
     const [target, setTarget] = useState<TargetData | null>(null);
+    const [glucoseAverage, setGlucoseAverage] = useState<GlucoseAverage | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const average = 113.06
+    const average = glucoseAverage?.average ?? 0
     const goal = target?.value ?? 0
     const tolerance = target?.tolerance ?? 0
     const statusWithinRange = getStatusWithinRange(average)
     const StatusRangeIcon = getStatusRangeIcon(statusWithinRange)
 
-    useEffect(() => {
-        const data = getTarget()
-        if (data !== undefined) setTarget(data)
-    },[])
+    const fetchData = async () => {
+        setErrorMessage("")
+        setLoading(true)
+        try {
+            const targetData = getTarget()
+            if (targetData !== undefined) setTarget(targetData)
 
-    return (
+            const glucoseAverageData = await fetchGlucoseAverage()
+            setGlucoseAverage(glucoseAverageData)
+
+        } catch (error: any) {
+            setErrorMessage(error.message)
+            console.error(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    return loading ? (<div>Carregando...</div>) : (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
 
             {/* Conteúdo */}
             <div className="flex items-end justify-between">
                 <div>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
-                        Média {target?.interval ?? 7} dias
+                        Média {glucoseAverage?.interval ?? "-"} dias
                     </span>
                     <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
                         {average.toFixed(2)}
